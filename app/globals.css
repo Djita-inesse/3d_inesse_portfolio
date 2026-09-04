@@ -1,0 +1,820 @@
+/* ==========================================================================
+   TOKENS
+   Le theme clair vit sur :root. Le theme sombre est applique de deux facons :
+   - via data-theme="dark" pose par le script inline du <head> (choix explicite)
+   - via prefers-color-scheme quand aucun choix n'a ete enregistre (sans JS)
+   ========================================================================== */
+
+:root {
+  --fond: #faf9f7;
+  --encre: #1a1a1a;
+  --encre-douce: #5a544e;
+  --filet: #dcd6ce;
+  --brique: #b4482e;
+  --sur-brique: #ffffff;
+  --surface: #efebe4;
+
+  --marge: 180px;
+  --contenu: 1080px;
+  --etiquette: 150px;
+  --gouttiere: 56px;
+  --hauteur-entete: 64px;
+
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fond: #141110;
+    --encre: #f2eee8;
+    --encre-douce: #a39c93;
+    --filet: #332e29;
+    --brique: #d9663f;
+    --sur-brique: #141110;
+    --surface: #1e1a18;
+
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme="dark"] {
+  --fond: #141110;
+  --encre: #f2eee8;
+  --encre-douce: #a39c93;
+  --filet: #332e29;
+  --brique: #d9663f;
+  --sur-brique: #141110;
+  --surface: #1e1a18;
+
+  color-scheme: dark;
+}
+
+/* ==========================================================================
+   BASE
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--fond);
+  color: var(--encre);
+  font-family: var(--police-corps);
+  font-size: 18px;
+  line-height: 1.6;
+  font-synthesis-weight: none;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--police-titres);
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.2;
+}
+
+p {
+  margin: 0;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: var(--brique);
+  text-decoration: none;
+  transition: color 150ms ease, border-color 150ms ease;
+}
+
+a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--brique);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--brique);
+  color: var(--sur-brique);
+}
+
+/* ==========================================================================
+   GRILLE
+   1440px de large, 180px de marge, 1080px de contenu.
+   Ruptures a 1080px puis 720px.
+   ========================================================================== */
+
+.shell {
+  max-width: calc(var(--contenu) + var(--marge) * 2);
+  margin: 0 auto;
+  padding-inline: var(--marge);
+}
+
+.lien-evitement {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+}
+
+.lien-evitement:focus {
+  left: 16px;
+  top: 16px;
+  background: var(--brique);
+  color: var(--sur-brique);
+  padding: 10px 16px;
+  text-decoration: none;
+}
+
+/* ==========================================================================
+   EN-TETE COLLE
+   ========================================================================== */
+
+.entete {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 50;
+  height: var(--hauteur-entete);
+  background: color-mix(in srgb, var(--fond) 82%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--filet);
+  transition: background-color 200ms ease, border-color 200ms ease;
+}
+
+.entete__inner {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.entete__nom {
+  font-family: var(--police-titres);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--encre);
+}
+
+.entete__nom:hover {
+  text-decoration: none;
+  color: var(--brique);
+}
+
+.entete__nav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.entete__lien {
+  font-family: var(--police-titres);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--encre-douce);
+}
+
+.entete__lien:hover {
+  color: var(--encre);
+  text-decoration: none;
+}
+
+.entete__lien[aria-current="true"] {
+  color: var(--brique);
+}
+
+.bouton-theme {
+  font-family: var(--police-titres);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--encre-douce);
+  background: transparent;
+  border: 1px solid var(--filet);
+  border-radius: 0;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: color 200ms ease, border-color 200ms ease;
+}
+
+.bouton-theme:hover {
+  color: var(--encre);
+  border-color: var(--encre-douce);
+}
+
+/* ==========================================================================
+   SECTIONS — etiquette 150px + contenu fluide, filet de separation
+   ========================================================================== */
+
+.section {
+  display: grid;
+  grid-template-columns: var(--etiquette) 1fr;
+  column-gap: var(--gouttiere);
+  border-top: 1px solid var(--filet);
+  padding-block: 88px;
+  scroll-margin-top: 80px;
+}
+
+.section__etiquette {
+  font-family: var(--police-titres);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--encre-douce);
+  padding-top: 4px;
+}
+
+.section__contenu {
+  min-width: 0;
+}
+
+/* ==========================================================================
+   EN-TETE DE PAGE (hero)
+   ========================================================================== */
+
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  column-gap: var(--gouttiere);
+  align-items: start;
+  padding-top: calc(var(--hauteur-entete) + 96px);
+  padding-bottom: 88px;
+}
+
+.hero__filet {
+  width: 56px;
+  height: 3px;
+  background: var(--brique);
+  margin-bottom: 28px;
+}
+
+.hero__nom {
+  font-size: 60px;
+  letter-spacing: -0.025em;
+}
+
+.hero__role {
+  font-family: var(--police-titres);
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--brique);
+  margin-top: 6px;
+}
+
+.hero__intro {
+  margin-top: 28px;
+  max-width: 60ch;
+  color: var(--encre);
+}
+
+.hero__dispo {
+  margin-top: 20px;
+  color: var(--encre-douce);
+  font-style: italic;
+}
+
+.hero__liens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-top: 32px;
+  font-family: var(--police-titres);
+  font-size: 14px;
+}
+
+/* ==========================================================================
+   FIGURES — cadre 1px, aucun arrondi, aucune ombre
+   ========================================================================== */
+
+.figure {
+  margin: 0;
+  border: 1px solid var(--filet);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.figure--projet {
+  aspect-ratio: 5 / 2;
+  margin-top: 32px;
+}
+
+.figure--portrait {
+  width: 260px;
+  height: 320px;
+}
+
+.figure__vide {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  text-align: center;
+  font-family: var(--police-titres);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--encre-douce);
+}
+
+.figure__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ==========================================================================
+   PROJETS
+   ========================================================================== */
+
+.projet + .projet {
+  margin-top: 88px;
+}
+
+.projet__entete {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.projet__numero {
+  font-family: var(--police-titres);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--brique);
+  display: block;
+  margin-bottom: 10px;
+}
+
+.projet__titre {
+  font-size: 25px;
+  letter-spacing: -0.015em;
+}
+
+.projet__annee {
+  font-family: var(--police-titres);
+  font-size: 13px;
+  color: var(--encre-douce);
+  white-space: nowrap;
+}
+
+.projet__contexte {
+  margin-top: 10px;
+  font-style: italic;
+  color: var(--encre-douce);
+}
+
+.projet__points {
+  margin-top: 20px;
+  display: grid;
+  gap: 10px;
+}
+
+.liste-puces {
+  display: grid;
+  gap: 10px;
+}
+
+.puce {
+  position: relative;
+  padding-left: 20px;
+  font-size: 17px;
+}
+
+.puce::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.62em;
+  width: 5px;
+  height: 5px;
+  background: var(--brique);
+}
+
+.projet__stack {
+  margin-top: 20px;
+  font-family: var(--police-titres);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--encre-douce);
+}
+
+/* ==========================================================================
+   CODE — lignes separees par des filets
+   ========================================================================== */
+
+.code__lien {
+  font-family: var(--police-titres);
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.code__intro {
+  margin-top: 12px;
+  color: var(--encre-douce);
+  font-size: 17px;
+}
+
+.depots {
+  margin-top: 32px;
+  border-top: 1px solid var(--filet);
+}
+
+.depot {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  column-gap: 24px;
+  padding-block: 18px;
+  border-bottom: 1px solid var(--filet);
+}
+
+.depot__nom {
+  font-family: var(--police-titres);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--encre);
+}
+
+.depot__description {
+  font-size: 17px;
+  color: var(--encre-douce);
+}
+
+/* ==========================================================================
+   STACK — 3 colonnes, pastilles carrees en CSS pur
+   ========================================================================== */
+
+.stack {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: var(--gouttiere);
+  row-gap: 48px;
+}
+
+.stack__titre {
+  font-family: var(--police-titres);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--encre);
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--filet);
+  margin-bottom: 16px;
+}
+
+.stack__liste {
+  display: grid;
+  gap: 10px;
+}
+
+.techno {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 16px;
+}
+
+.pastille {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--filet);
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--police-titres);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--encre-douce);
+}
+
+/* ==========================================================================
+   PARCOURS
+   ========================================================================== */
+
+.parcours__titre {
+  font-family: var(--police-titres);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--encre);
+  margin-bottom: 16px;
+}
+
+.parcours__titre--second {
+  margin-top: 56px;
+}
+
+.parcours__liste {
+  border-top: 1px solid var(--filet);
+}
+
+.parcours__ligne {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  column-gap: 24px;
+  align-items: baseline;
+  padding-block: 18px;
+  border-bottom: 1px solid var(--filet);
+}
+
+.parcours__role {
+  font-family: var(--police-titres);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.parcours__lieu {
+  font-size: 16px;
+  color: var(--encre-douce);
+  margin-top: 3px;
+}
+
+.parcours__dates {
+  font-family: var(--police-titres);
+  font-size: 13px;
+  color: var(--encre-douce);
+  white-space: nowrap;
+}
+
+.langues {
+  margin-top: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 32px;
+  font-size: 16px;
+  color: var(--encre-douce);
+}
+
+/* ==========================================================================
+   CONTACT
+   ========================================================================== */
+
+.contact__dispo {
+  font-family: var(--police-titres);
+  font-size: 25px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  max-width: 22ch;
+}
+
+.contact__coordonnees {
+  margin-top: 28px;
+  display: grid;
+  gap: 8px;
+  font-size: 18px;
+}
+
+.contact__telephone {
+  color: var(--encre-douce);
+}
+
+.bouton-plein {
+  display: inline-block;
+  margin-top: 32px;
+  padding: 14px 28px;
+  background: var(--brique);
+  color: var(--sur-brique);
+  border: 1px solid var(--brique);
+  border-radius: 0;
+  font-family: var(--police-titres);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 150ms ease;
+}
+
+.bouton-plein:hover {
+  opacity: 0.88;
+  text-decoration: none;
+  color: var(--sur-brique);
+}
+
+/* ==========================================================================
+   PIED DE PAGE
+   ========================================================================== */
+
+.pied {
+  border-top: 1px solid var(--filet);
+  padding-block: 32px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+  font-family: var(--police-titres);
+  font-size: 13px;
+  color: var(--encre-douce);
+}
+
+.pied__liens {
+  display: flex;
+  gap: 24px;
+}
+
+/* ==========================================================================
+   BOUTON RETOUR EN HAUT
+   ========================================================================== */
+
+.retour-haut {
+  position: fixed;
+  right: 32px;
+  bottom: 32px;
+  z-index: 40;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--brique);
+  color: var(--sur-brique);
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity 250ms ease, transform 250ms ease;
+}
+
+.retour-haut--visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* ==========================================================================
+   ANIMATION D'ENTREE — mecanique unique
+   ========================================================================== */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 400ms ease-out, transform 400ms ease-out;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.reveal--visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 1080px) {
+  :root {
+    --marge: 56px;
+    --gouttiere: 40px;
+  }
+
+  .hero {
+    grid-template-columns: 1fr 220px;
+  }
+
+  .figure--portrait {
+    width: 220px;
+    height: 272px;
+  }
+
+  .stack {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  :root {
+    --marge: 24px;
+  }
+
+  body {
+    font-size: 17px;
+  }
+
+  .entete__nav {
+    gap: 16px;
+  }
+
+  .entete__lien {
+    font-size: 12px;
+  }
+
+  .section {
+    grid-template-columns: 1fr;
+    padding-block: 56px;
+  }
+
+  .section__etiquette {
+    margin-bottom: 24px;
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
+    padding-top: calc(var(--hauteur-entete) + 56px);
+    row-gap: 40px;
+  }
+
+  .hero__nom {
+    font-size: 40px;
+  }
+
+  .hero__role {
+    font-size: 18px;
+  }
+
+  .figure--portrait {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 260 / 320;
+  }
+
+  .stack {
+    grid-template-columns: 1fr;
+    row-gap: 40px;
+  }
+
+  .depot {
+    grid-template-columns: 1fr;
+    row-gap: 4px;
+  }
+
+  .parcours__ligne {
+    grid-template-columns: 1fr;
+    row-gap: 6px;
+  }
+
+  .projet__entete {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .contact__dispo {
+    font-size: 22px;
+    max-width: none;
+  }
+
+  .retour-haut {
+    right: 16px;
+    bottom: 16px;
+  }
+}
+
+/* ==========================================================================
+   ANIMATIONS REDUITES — tout est desactive, le contenu reste visible
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+
+  .retour-haut {
+    transform: none;
+  }
+}
