@@ -1,23 +1,24 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo, Source_Serif_4 } from "next/font/google";
+import { Barlow_Condensed, Inter } from "next/font/google";
 
+import CvModal from "@/components/CvModal";
 import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import BackToTop from "@/components/BackToTop";
 import { site } from "@/content/data";
 
 import "./globals.css";
 
-const archivo = Archivo({
+const barlow = Barlow_Condensed({
   subsets: ["latin"],
   display: "swap",
-  variable: "--police-titres",
+  weight: ["700", "900"],
+  variable: "--police-titre",
 });
 
-const sourceSerif = Source_Serif_4({
+const inter = Inter({
   subsets: ["latin"],
   display: "swap",
-  variable: "--police-corps",
+  weight: ["400", "500", "600", "700"],
+  variable: "--police-texte",
 });
 
 export const metadata: Metadata = {
@@ -41,39 +42,24 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#faf9f7" },
-    { media: "(prefers-color-scheme: dark)", color: "#141110" },
-  ],
+  themeColor: "#f4f1ea",
 };
-
-/**
- * Pose data-theme avant le premier rendu : sans ce script, la page s'afficherait
- * une fraction de seconde dans le mauvais theme (flash).
- */
-const scriptTheme = `(function(){try{var t=localStorage.getItem("theme");if(t!=="light"&&t!=="dark"){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}document.documentElement.setAttribute("data-theme",t);}catch(e){}})();`;
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="fr" className={`${archivo.variable} ${sourceSerif.variable}`}>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: scriptTheme }} />
-        {/* Sans JavaScript, l'animation d'entree ne se declenche jamais :
-            le contenu doit rester visible. */}
-        <noscript>
-          <style>{`.reveal{opacity:1;transform:none}`}</style>
-        </noscript>
-      </head>
+    <html lang="fr" className={`${barlow.variable} ${inter.variable}`}>
       <body>
         <a className="lien-evitement" href="#contenu">
           Aller au contenu
         </a>
+        <noscript>
+          <style>{`.reveal{opacity:1!important;transform:none!important}`}</style>
+        </noscript>
         <Header />
         {children}
-        <Footer />
-        <BackToTop />
+        <CvModal />
       </body>
     </html>
   );

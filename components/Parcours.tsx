@@ -1,50 +1,52 @@
-import Reveal from "./Reveal";
-import Section from "./Section";
-import { education, experience, languages } from "@/content/data";
+import Reveal from "@/components/Reveal";
+import { parcours } from "@/content/data";
 import type { TimelineEntry } from "@/content/data";
 
-const Timeline = ({ entries }: { entries: TimelineEntry[] }) => (
-  <ul className="parcours__liste">
-    {entries.map((entry, index) => (
-      <Reveal
-        key={`${entry.role}-${entry.dates}`}
-        as="li"
-        className="parcours__ligne"
-        delay={index * 60}
-      >
-        <div>
-          <p className="parcours__role">{entry.role}</p>
-          <p className="parcours__lieu">{entry.place}</p>
-        </div>
-        <span className="parcours__dates">{entry.dates}</span>
+/** Frise verticale : un fil, des points, pas de cartes. */
+function Frise({ kicker, entries }: { kicker: string; entries: TimelineEntry[] }) {
+  return (
+    <div className="parcours__colonne">
+      <Reveal as="h3" className="parcours__kicker">
+        {kicker}
       </Reveal>
-    ))}
-  </ul>
-);
+      <ol className="frise">
+        {entries.map((entry, index) => (
+          <Reveal
+            as="li"
+            key={entry.title}
+            className={entry.status ? "frise__etape frise__etape--actuelle" : "frise__etape"}
+            delay={index * 90}
+          >
+            <span className="frise__point" aria-hidden="true" />
+            <p className="etape__dates">
+              {entry.dates}
+              {entry.status ? <span className="etape__statut">{entry.status}</span> : null}
+            </p>
+            <p className="etape__titre">{entry.title}</p>
+            <div className="etape__texte">
+              {entry.lines.map((line) => (
+                <p key={line}>{line}</p>
+              ))}
+            </div>
+          </Reveal>
+        ))}
+      </ol>
+    </div>
+  );
+}
 
 export default function Parcours() {
   return (
-    <Section id="parcours" label="Parcours">
-      <Reveal>
-        <h3 className="parcours__titre">Expérience</h3>
-      </Reveal>
-      <Timeline entries={experience} />
-
-      <Reveal>
-        <h3 className="parcours__titre parcours__titre--second">Formation</h3>
-      </Reveal>
-      <Timeline entries={education} />
-
-      <Reveal>
-        <h3 className="parcours__titre parcours__titre--second">
-          Langues et certifications
-        </h3>
-        <ul className="langues">
-          {languages.map((item) => (
-            <li key={item}>{item}</li>
-          ))}
-        </ul>
-      </Reveal>
-    </Section>
+    <section id="parcours" className="section section--parcours">
+      <div className="enveloppe section__pile section__pile--24">
+        <Reveal as="h2" className="titre-72">
+          {parcours.title}
+        </Reveal>
+        <div className="parcours">
+          <Frise {...parcours.experience} />
+          <Frise {...parcours.education} />
+        </div>
+      </div>
+    </section>
   );
 }
