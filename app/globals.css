@@ -2395,6 +2395,770 @@ button.bouton--contour {
   }
 }
 
+/* ==========================================================================
+   Sumi, le compagnon du site
+   Repère du dessin : viewBox 100 × 150 (sol y = 146). Les pivots sont
+   exprimés dans ce repère grâce à transform-box: view-box.
+   ========================================================================== */
+
+.compagnon {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: 40;
+  width: 84px;
+  pointer-events: none;
+  will-change: transform;
+  --regard-x: 0;
+  --regard-y: 0;
+  --saut: 0px;
+  --ombre: 1;
+}
+
+.compagnon__corps {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: grab;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.compagnon--porte .compagnon__corps {
+  cursor: grabbing;
+}
+
+.compagnon__corps:focus-visible {
+  outline-offset: -4px;
+}
+
+.compagnon__svg {
+  display: block;
+  overflow: visible;
+  /* Liseré couleur papier : invisible sur crème, détache Sumi du noir */
+  filter: drop-shadow(0 0 1px var(--beige)) drop-shadow(0 0 1px var(--beige));
+}
+
+.compagnon--gauche .compagnon__svg {
+  transform: scaleX(-1);
+}
+
+.compagnon__svg g,
+.compagnon__svg path,
+.compagnon__svg ellipse {
+  transform-box: view-box;
+}
+
+/* Ombre au sol : reste au sol pendant les sauts */
+.compagnon__ombre {
+  position: absolute;
+  left: 50%;
+  bottom: 1px;
+  width: 46px;
+  height: 7px;
+  margin-left: -23px;
+  border-radius: 50%;
+  background: rgba(17, 17, 17, 0.2);
+  transform: translateY(var(--saut)) scale(var(--ombre));
+  pointer-events: none;
+}
+
+/* ---- Pivots ---- */
+.sumi-silhouette { transform-origin: 50px 146px; }
+.sumi-tete { transform-origin: 50px 56px; }
+.sumi-tete-regard {
+  transform-origin: 50px 56px;
+  transform: rotate(calc(var(--regard-x) * 5deg)) translateY(calc(var(--regard-y) * 0.8px));
+  transition: transform 0.25s ease-out;
+}
+.sumi-cuisse--arriere { transform-origin: 45.5px 96px; }
+.sumi-cuisse--avant { transform-origin: 55.5px 96px; }
+.sumi-tibia--arriere { transform-origin: 45.5px 119px; }
+.sumi-tibia--avant { transform-origin: 55.5px 119px; }
+.sumi-bras--arriere { transform-origin: 36px 62px; }
+.sumi-bras--avant { transform-origin: 64px 62px; }
+.sumi-avant-bras--arriere { transform-origin: 36px 80px; }
+.sumi-avant-bras--avant { transform-origin: 64px 80px; }
+.sumi-pan-manteau { transform-origin: 50px 93px; }
+.sumi-echarpe--1 { transform-origin: 40px 60px; }
+.sumi-echarpe--2 { transform-origin: 27.5px 64px; }
+.sumi-echarpe--3 { transform-origin: 17px 64px; }
+.sumi-torse { transform-origin: 50px 94px; }
+
+/* Longs cheveux : balancement léger, plus marqué en mouvement */
+.sumi-cheveux-dos {
+  transform-origin: 50px 30px;
+  animation: sumi-cheveux 3.2s ease-in-out infinite alternate;
+}
+
+.compagnon--marche .sumi-cheveux-dos { animation-duration: 0.8s; }
+
+.compagnon--course .sumi-cheveux-dos,
+.compagnon--saut .sumi-cheveux-dos,
+.compagnon--chute .sumi-cheveux-dos {
+  animation: none;
+  transform: skewX(12deg) rotate(4deg);
+}
+
+.compagnon--porte .sumi-cheveux-dos { animation-duration: 0.45s; }
+
+@keyframes sumi-cheveux {
+  from { transform: rotate(-1.6deg) skewX(-2deg); }
+  to { transform: rotate(1.6deg) skewX(2deg); }
+}
+
+/* Les iris suivent la souris */
+.sumi-iris {
+  transform: translate(calc(var(--regard-x) * 1.5px), calc(var(--regard-y) * 1.2px));
+  transition: transform 0.15s ease-out;
+}
+
+/* ---- Expressions ---- */
+.sumi-oeil-joie,
+.sumi-oeil-ferme,
+.sumi-bouche {
+  display: none;
+}
+
+/* Les yeux se ferment et s'agrandissent autour de leur propre centre
+   (sélecteur plus fort que la règle view-box générale) */
+.compagnon__svg .sumi-oeil {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.07s;
+}
+
+.exp-neutre .sumi-bouche--neutre,
+.exp-surprise .sumi-bouche--o,
+.exp-joie .sumi-bouche--joie,
+.exp-baille .sumi-bouche--baille,
+.exp-dort .sumi-bouche--neutre {
+  display: inline;
+}
+
+/* Quand il parle, la bouche s'anime (sauf s'il rit ou s'étonne) */
+.compagnon--parle.exp-neutre .sumi-bouche--neutre { display: none; }
+.compagnon--parle.exp-neutre .sumi-bouche--parle {
+  display: inline;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: sumi-parle 0.22s ease-in-out infinite alternate;
+}
+
+@keyframes sumi-parle {
+  from { transform: scaleY(0.35); }
+  to { transform: scaleY(1.1); }
+}
+
+.exp-joie .sumi-oeil,
+.exp-dort .sumi-oeil,
+.exp-baille .sumi-oeil {
+  display: none;
+}
+
+.exp-joie .sumi-oeil-joie,
+.exp-dort .sumi-oeil-ferme,
+.exp-baille .sumi-oeil-ferme {
+  display: inline;
+}
+
+.exp-surprise .sumi-oeil { transform: scale(1.12); }
+.exp-surprise .compagnon__svg .sumi-iris { transform: scale(0.8); transform-box: fill-box; transform-origin: center; }
+.sumi-sourcils { transition: transform 0.2s; }
+.exp-surprise .sumi-sourcils { transform: translateY(-2.4px); }
+.exp-joie .sumi-sourcils { transform: translateY(-1px); }
+
+/* Clignement (classe posée en JavaScript) */
+.compagnon--cligne .sumi-oeil { transform: scaleY(0.08); }
+
+/* ---- Écharpe : ondule toujours, plus vite en mouvement ---- */
+.sumi-echarpe--1 { animation: sumi-vent-1 var(--vent, 1.6s) ease-in-out infinite alternate; }
+.sumi-echarpe--2 { animation: sumi-vent-2 var(--vent, 1.6s) ease-in-out -0.3s infinite alternate; }
+.sumi-echarpe--3 { animation: sumi-vent-3 var(--vent, 1.6s) ease-in-out -0.6s infinite alternate; }
+
+.compagnon--marche { --vent: 0.7s; }
+.compagnon--course,
+.compagnon--saut,
+.compagnon--chute,
+.compagnon--porte { --vent: 0.32s; }
+
+@keyframes sumi-vent-1 { from { transform: rotate(-8deg); } to { transform: rotate(9deg); } }
+@keyframes sumi-vent-2 { from { transform: rotate(-12deg); } to { transform: rotate(14deg); } }
+@keyframes sumi-vent-3 { from { transform: rotate(-16deg); } to { transform: rotate(18deg); } }
+
+/* ---- Repos : respiration ---- */
+.compagnon--repos .sumi-torse,
+.compagnon--regarde .sumi-torse {
+  animation: sumi-respire 3s ease-in-out infinite;
+}
+
+.compagnon--repos .sumi-tete,
+.compagnon--regarde .sumi-tete {
+  animation: sumi-tete-respire 3s ease-in-out infinite;
+}
+
+.compagnon--repos .sumi-bras,
+.compagnon--salut .sumi-bras--arriere {
+  animation: sumi-bras-respire 3s ease-in-out infinite;
+}
+
+@keyframes sumi-respire { 50% { transform: scaleY(1.018); } }
+@keyframes sumi-tete-respire { 50% { transform: translateY(-0.6px); } }
+@keyframes sumi-bras-respire { 50% { transform: rotate(2deg); } }
+
+/* ---- Marche : cycle de 0,8 s, genoux et coudes articulés ---- */
+.compagnon--marche .sumi-silhouette { animation: sumi-rebond 0.4s ease-in-out infinite; }
+.compagnon--marche .sumi-cuisse--avant { animation: sumi-cuisse 0.8s linear infinite; }
+.compagnon--marche .sumi-cuisse--arriere { animation: sumi-cuisse 0.8s linear -0.4s infinite; }
+.compagnon--marche .sumi-tibia--avant { animation: sumi-tibia 0.8s linear infinite; }
+.compagnon--marche .sumi-tibia--arriere { animation: sumi-tibia 0.8s linear -0.4s infinite; }
+.compagnon--marche .sumi-bras--avant { animation: sumi-bras 0.8s ease-in-out -0.4s infinite; }
+.compagnon--marche .sumi-bras--arriere { animation: sumi-bras 0.8s ease-in-out infinite; }
+.compagnon--marche .sumi-avant-bras { transform: rotate(-18deg); }
+.compagnon--marche .sumi-pan-manteau { animation: sumi-pan 0.8s ease-in-out infinite; }
+.compagnon--marche .sumi-tete { animation: sumi-tete-pas 0.4s ease-in-out infinite; }
+
+@keyframes sumi-rebond {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2.4px); }
+}
+
+@keyframes sumi-cuisse {
+  0% { transform: rotate(-24deg); }
+  50% { transform: rotate(22deg); }
+  100% { transform: rotate(-24deg); }
+}
+
+@keyframes sumi-tibia {
+  0% { transform: rotate(4deg); }
+  45% { transform: rotate(8deg); }
+  65% { transform: rotate(48deg); }
+  85% { transform: rotate(18deg); }
+  100% { transform: rotate(4deg); }
+}
+
+@keyframes sumi-bras {
+  0%, 100% { transform: rotate(20deg); }
+  50% { transform: rotate(-20deg); }
+}
+
+@keyframes sumi-pan {
+  0%, 100% { transform: skewX(3deg); }
+  50% { transform: skewX(-3deg); }
+}
+
+@keyframes sumi-tete-pas {
+  50% { transform: translateY(0.8px); }
+}
+
+/* ---- Course : penché en avant, cycle rapide, bras pliés ---- */
+.compagnon--course .sumi-silhouette { animation: sumi-course-corps 0.23s ease-in-out infinite; }
+.compagnon--course .sumi-cuisse--avant { animation: sumi-cuisse-course 0.46s linear infinite; }
+.compagnon--course .sumi-cuisse--arriere { animation: sumi-cuisse-course 0.46s linear -0.23s infinite; }
+.compagnon--course .sumi-tibia--avant { animation: sumi-tibia-course 0.46s linear infinite; }
+.compagnon--course .sumi-tibia--arriere { animation: sumi-tibia-course 0.46s linear -0.23s infinite; }
+.compagnon--course .sumi-bras--avant { animation: sumi-bras-course 0.46s ease-in-out -0.23s infinite; }
+.compagnon--course .sumi-bras--arriere { animation: sumi-bras-course 0.46s ease-in-out infinite; }
+.compagnon--course .sumi-avant-bras { transform: rotate(-85deg); }
+.compagnon--course .sumi-pan-manteau { transform: skewX(14deg); }
+
+@keyframes sumi-course-corps {
+  0%, 100% { transform: rotate(9deg) translateY(0); }
+  50% { transform: rotate(9deg) translateY(-4px); }
+}
+
+@keyframes sumi-cuisse-course {
+  0% { transform: rotate(-42deg); }
+  50% { transform: rotate(36deg); }
+  100% { transform: rotate(-42deg); }
+}
+
+@keyframes sumi-tibia-course {
+  0% { transform: rotate(10deg); }
+  40% { transform: rotate(20deg); }
+  65% { transform: rotate(95deg); }
+  85% { transform: rotate(50deg); }
+  100% { transform: rotate(10deg); }
+}
+
+@keyframes sumi-bras-course {
+  0%, 100% { transform: rotate(40deg); }
+  50% { transform: rotate(-45deg); }
+}
+
+/* ---- Regarde autour ---- */
+.compagnon--regarde .sumi-tete-regard {
+  animation: sumi-regarde 2.6s ease-in-out;
+}
+
+@keyframes sumi-regarde {
+  0%, 100% { transform: rotate(0); }
+  20%, 40% { transform: rotate(-9deg) translateX(-1px); }
+  60%, 80% { transform: rotate(8deg) translateX(1px); }
+}
+
+/* ---- Étirement ---- */
+.compagnon--etire .sumi-silhouette { animation: sumi-etire-corps 2.2s ease-in-out; }
+.compagnon--etire .sumi-bras--avant { animation: sumi-etire-bras-avant 2.2s ease-in-out; }
+.compagnon--etire .sumi-bras--arriere { animation: sumi-etire-bras-arriere 2.2s ease-in-out; }
+.compagnon--etire .sumi-avant-bras { animation: sumi-etire-coude 2.2s ease-in-out; }
+
+@keyframes sumi-etire-corps {
+  0%, 100% { transform: scaleY(1); }
+  30%, 70% { transform: scaleY(1.05); }
+  50% { transform: scaleY(1.05) rotate(3deg); }
+}
+
+@keyframes sumi-etire-bras-avant {
+  0%, 100% { transform: rotate(0); }
+  30%, 70% { transform: rotate(-168deg); }
+}
+
+@keyframes sumi-etire-bras-arriere {
+  0%, 100% { transform: rotate(0); }
+  30%, 70% { transform: rotate(168deg); }
+}
+
+@keyframes sumi-etire-coude {
+  0%, 100% { transform: rotate(0); }
+  30%, 70% { transform: rotate(-12deg); }
+}
+
+/* ---- Assis (et sommeil, qui part de la position assise) ---- */
+.compagnon--assis .sumi-silhouette,
+.compagnon--baille .sumi-silhouette,
+.compagnon--sommeil .sumi-silhouette {
+  transform: translateY(19px);
+  transition: transform 0.35s var(--ease);
+}
+
+.compagnon--assis .sumi-cuisse,
+.compagnon--baille .sumi-cuisse,
+.compagnon--sommeil .sumi-cuisse { transform: rotate(-82deg); transition: transform 0.35s var(--ease); }
+
+.compagnon--assis .sumi-tibia,
+.compagnon--baille .sumi-tibia,
+.compagnon--sommeil .sumi-tibia { transform: rotate(84deg); transition: transform 0.35s var(--ease); }
+
+.compagnon--assis .sumi-bras,
+.compagnon--sommeil .sumi-bras { transform: rotate(-28deg); }
+
+.compagnon--assis .sumi-avant-bras,
+.compagnon--sommeil .sumi-avant-bras { transform: rotate(-55deg); }
+
+.compagnon--assis .sumi-tete { animation: sumi-tete-respire 3s ease-in-out infinite; }
+
+/* Bâillement : bras en l'air, tête en arrière */
+.compagnon--baille .sumi-bras--avant { transform: rotate(-150deg); transition: transform 0.4s; }
+.compagnon--baille .sumi-bras--arriere { transform: rotate(150deg); transition: transform 0.4s; }
+.compagnon--baille .sumi-tete { transform: rotate(-8deg); transition: transform 0.4s; }
+
+/* Sommeil : tête qui tombe, respiration lente */
+.compagnon--sommeil .sumi-tete { transform: rotate(13deg) translateY(1.5px); transition: transform 0.6s; }
+.compagnon--sommeil .sumi-torse { animation: sumi-respire 3.6s ease-in-out infinite; }
+
+.compagnon__zzz {
+  position: absolute;
+  top: 4px;
+  right: -8px;
+  font-family: var(--titre);
+  font-weight: 900;
+  font-size: 17px;
+  color: var(--encre);
+  animation: sumi-zzz 2.4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.compagnon__zzz span:first-child { font-size: 13px; }
+.compagnon__zzz span:last-child { font-size: 10px; }
+
+@keyframes sumi-zzz {
+  0% { opacity: 0; transform: translate(0, 6px); }
+  30%, 70% { opacity: 1; }
+  100% { opacity: 0; transform: translate(10px, -14px); }
+}
+
+/* ---- Salut de la main ---- */
+.compagnon--salut .sumi-bras--avant { transform: rotate(-158deg); transition: transform 0.2s; }
+.compagnon--salut .sumi-avant-bras--avant { animation: sumi-coucou 0.32s ease-in-out infinite alternate; }
+.compagnon--salut .sumi-tete { transform: rotate(-5deg); transition: transform 0.3s; }
+
+@keyframes sumi-coucou {
+  from { transform: rotate(-26deg); }
+  to { transform: rotate(18deg); }
+}
+
+/* ---- Saut : anticipation, détente, réception ---- */
+.compagnon--accroupi .sumi-silhouette { transform: scale(1.06, 0.86); }
+.compagnon--accroupi .sumi-cuisse { transform: rotate(-24deg); }
+.compagnon--accroupi .sumi-tibia { transform: rotate(46deg); }
+.compagnon--accroupi .sumi-bras { transform: rotate(30deg); }
+
+.compagnon--saut .sumi-silhouette { transform: scale(0.95, 1.07); transition: transform 0.12s; }
+.compagnon--saut .sumi-cuisse { transform: rotate(-34deg); transition: transform 0.15s; }
+.compagnon--saut .sumi-tibia { transform: rotate(58deg); transition: transform 0.15s; }
+.compagnon--saut .sumi-bras--avant { transform: rotate(-150deg); transition: transform 0.15s; }
+.compagnon--saut .sumi-bras--arriere { transform: rotate(150deg); transition: transform 0.15s; }
+
+.compagnon--salto.compagnon--saut .sumi-silhouette {
+  transform-origin: 50px 90px;
+  animation: sumi-salto 0.6s var(--ease) forwards;
+}
+
+@keyframes sumi-salto {
+  from { transform: rotate(0); }
+  to { transform: rotate(-360deg); }
+}
+
+.compagnon--atterrit .sumi-silhouette { animation: sumi-ecrase 0.22s ease-out; }
+.compagnon--atterrit .sumi-cuisse { transform: rotate(-16deg); }
+.compagnon--atterrit .sumi-tibia { transform: rotate(32deg); }
+
+@keyframes sumi-ecrase {
+  0% { transform: scale(1.12, 0.82); }
+  100% { transform: scale(1, 1); }
+}
+
+/* ---- Porté (on le tient par le col) et chute ---- */
+.compagnon--porte .sumi-silhouette,
+.compagnon--chute .sumi-silhouette {
+  transform-origin: 50px 56px;
+  animation: sumi-balance-porte 0.9s ease-in-out infinite alternate;
+}
+
+.compagnon--porte .sumi-cuisse--avant,
+.compagnon--chute .sumi-cuisse--avant { animation: sumi-gigote 0.28s ease-in-out infinite alternate; }
+.compagnon--porte .sumi-cuisse--arriere,
+.compagnon--chute .sumi-cuisse--arriere { animation: sumi-gigote 0.28s ease-in-out -0.14s infinite alternate; }
+.compagnon--porte .sumi-tibia,
+.compagnon--chute .sumi-tibia { transform: rotate(25deg); }
+.compagnon--porte .sumi-bras--avant,
+.compagnon--chute .sumi-bras--avant { animation: sumi-agite-avant 0.3s ease-in-out infinite alternate; }
+.compagnon--porte .sumi-bras--arriere,
+.compagnon--chute .sumi-bras--arriere { animation: sumi-agite-arriere 0.3s ease-in-out -0.15s infinite alternate; }
+
+@keyframes sumi-balance-porte {
+  from { transform: rotate(-6deg); }
+  to { transform: rotate(6deg); }
+}
+
+@keyframes sumi-gigote {
+  from { transform: rotate(-22deg); }
+  to { transform: rotate(18deg); }
+}
+
+@keyframes sumi-agite-avant {
+  from { transform: rotate(-150deg); }
+  to { transform: rotate(-120deg); }
+}
+
+@keyframes sumi-agite-arriere {
+  from { transform: rotate(150deg); }
+  to { transform: rotate(120deg); }
+}
+
+/* ---- Poussière (course, atterrissage) ---- */
+.sumi-poussieres {
+  position: fixed;
+  inset: auto 0 0 0;
+  height: 0;
+  z-index: 39;
+  pointer-events: none;
+}
+
+.sumi-poussiere {
+  position: absolute;
+  bottom: 2px;
+  width: 12px;
+  height: 12px;
+  margin-left: -6px;
+  border: 1.5px solid var(--encre);
+  border-radius: 50%;
+  background: var(--beige);
+  animation: sumi-poussiere 0.65s ease-out forwards;
+}
+
+@keyframes sumi-poussiere {
+  0% { opacity: 0.9; transform: translate(0, 0) scale(0.4); }
+  100% { opacity: 0; transform: translate(calc(var(--sens) * 22px), -12px) scale(1.4); }
+}
+
+/* ---- Bulle de dialogue manga ---- */
+.compagnon__bulle {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  width: max-content;
+  max-width: 220px;
+  padding: 10px 14px;
+  border: 2.5px solid var(--encre);
+  border-radius: 18px;
+  background: var(--blanc);
+  color: var(--encre);
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 18px;
+  box-shadow: 3px 3px 0 var(--encre);
+  animation: sumi-bulle 0.3s var(--ease);
+  pointer-events: none;
+}
+
+.compagnon__bulle::after {
+  content: "";
+  position: absolute;
+  bottom: -11px;
+  width: 16px;
+  height: 11px;
+  background: var(--encre);
+  clip-path: polygon(0 0, 100% 0, 30% 100%);
+}
+
+.compagnon__bulle--centre { left: 50%; transform: translateX(-50%); }
+.compagnon__bulle--centre::after { left: calc(50% - 6px); }
+.compagnon__bulle--gauche { left: 0; }
+.compagnon__bulle--gauche::after { left: 26px; }
+.compagnon__bulle--droite { right: 0; }
+.compagnon__bulle--droite::after { right: 26px; }
+
+@keyframes sumi-bulle {
+  from { opacity: 0; scale: 0.85; }
+}
+
+/* ---- Masquer / rappeler ---- */
+.compagnon__masquer {
+  position: absolute;
+  top: 6px;
+  right: -4px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1.5px solid var(--encre);
+  border-radius: 11px;
+  background: var(--beige);
+  color: var(--encre);
+  font: 700 14px/1 var(--corps);
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: auto;
+  transition: opacity 0.2s;
+}
+
+.compagnon:hover .compagnon__masquer,
+.compagnon__masquer:focus-visible {
+  opacity: 1;
+}
+
+.compagnon--porte .compagnon__masquer,
+.compagnon--chute .compagnon__masquer {
+  display: none;
+}
+
+@media (hover: none) {
+  .compagnon__masquer { opacity: 0.75; }
+}
+
+.compagnon-rappel {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 2px solid var(--encre);
+  border-radius: 22px;
+  background: var(--beige);
+  box-shadow: 3px 3px 0 var(--encre);
+  cursor: pointer;
+  transition: transform 0.25s var(--ease);
+}
+
+.compagnon-rappel:hover {
+  transform: translateY(-3px);
+}
+
+@media (max-width: 600px) {
+  .compagnon { width: 64px; }
+  .compagnon__svg { width: 64px; height: 96px; }
+  .compagnon__ombre { width: 36px; margin-left: -18px; }
+  .compagnon__bulle { max-width: 180px; font-size: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .compagnon *,
+  .compagnon__bulle,
+  .sumi-poussiere {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ==========================================================================
+   Ymir : perchoir sur la barre flottante et « Grand Terrassement »
+   ========================================================================== */
+
+/* La barre descend un peu sous son poids pour lui laisser la place */
+.barre {
+  transition: transform 0.45s var(--ease), opacity 0.3s, top 0.5s var(--ease);
+}
+
+html[data-perchoir] .barre--visible {
+  top: 108px;
+}
+
+/* Ymir passe devant la barre quand elle est assise dessus */
+html[data-perchoir] .compagnon {
+  z-index: 61;
+}
+
+/* En haut de l'écran, la bulle s'affiche sous elle */
+.compagnon--perchee .compagnon__bulle {
+  top: calc(100% + 12px);
+  bottom: auto;
+}
+
+.compagnon--perchee .compagnon__bulle::after {
+  top: -11px;
+  bottom: auto;
+  clip-path: polygon(30% 0, 100% 100%, 0 100%);
+}
+
+.compagnon--perchee .compagnon__ombre {
+  display: none;
+}
+
+/* Saut vers la barre : même pose que le saut */
+.compagnon--grimpe .sumi-silhouette { transform: scale(0.95, 1.07); transition: transform 0.12s; }
+.compagnon--grimpe .sumi-cuisse { transform: rotate(-40deg); transition: transform 0.15s; }
+.compagnon--grimpe .sumi-tibia { transform: rotate(70deg); transition: transform 0.15s; }
+.compagnon--grimpe .sumi-bras--avant { transform: rotate(-160deg); transition: transform 0.15s; }
+.compagnon--grimpe .sumi-bras--arriere { transform: rotate(160deg); transition: transform 0.15s; }
+
+/* Assise sur la barre, jambes qui se balancent dans le vide */
+.compagnon--perche .sumi-silhouette {
+  transform: translateY(19px);
+  transition: transform 0.3s var(--ease);
+}
+
+.compagnon--perche .sumi-cuisse {
+  transform: rotate(-82deg);
+}
+
+.compagnon--perche .sumi-tibia--avant {
+  animation: ymir-balance-jambe 1.1s ease-in-out infinite alternate;
+}
+
+.compagnon--perche .sumi-tibia--arriere {
+  animation: ymir-balance-jambe 1.1s ease-in-out -0.55s infinite alternate;
+}
+
+.compagnon--perche .sumi-bras {
+  transform: rotate(-18deg);
+}
+
+.compagnon--perche .sumi-avant-bras {
+  transform: rotate(-40deg);
+}
+
+@keyframes ymir-balance-jambe {
+  from { transform: rotate(58deg); }
+  to { transform: rotate(104deg); }
+}
+
+/* Endormie sur la barre : on garde l'ombre cachée et la pose assise */
+.compagnon--perchee.compagnon--sommeil .sumi-tibia,
+.compagnon--perchee.compagnon--baille .sumi-tibia {
+  transform: rotate(84deg);
+}
+
+/* Invocation : bras levés, elle trépigne */
+.compagnon--invoque .sumi-bras--avant {
+  transform: rotate(-168deg);
+  transition: transform 0.25s;
+}
+
+.compagnon--invoque .sumi-bras--arriere {
+  transform: rotate(168deg);
+  transition: transform 0.25s;
+}
+
+.compagnon--invoque .sumi-silhouette {
+  animation: ymir-trepigne 0.22s ease-in-out infinite alternate;
+}
+
+.compagnon--invoque .sumi-cuisse--avant {
+  animation: ymir-tape-du-pied 0.44s ease-in-out infinite;
+}
+
+.compagnon--invoque .sumi-tete {
+  transform: rotate(-6deg);
+}
+
+@keyframes ymir-trepigne {
+  from { transform: translateY(0); }
+  to { transform: translateY(-3px); }
+}
+
+@keyframes ymir-tape-du-pied {
+  0%, 100% { transform: rotate(0); }
+  40% { transform: rotate(-28deg); }
+}
+
+/* La page tremble (seulement le contenu : les éléments fixes restent en place) */
+html.terrassement #contenu {
+  animation: terrassement 0.16s linear infinite;
+}
+
+@keyframes terrassement {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-3px, 2px); }
+  50% { transform: translate(2px, -2px); }
+  75% { transform: translate(-2px, -1px); }
+  100% { transform: translate(3px, 1px); }
+}
+
+/* Onomatopées manga géantes */
+.terrassement-sfx {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.terrassement-sfx span {
+  position: absolute;
+  font-family: var(--titre);
+  font-weight: 900;
+  font-size: clamp(64px, 12vw, 180px);
+  line-height: 1;
+  color: var(--rouge);
+  -webkit-text-stroke: 4px var(--encre);
+  paint-order: stroke fill;
+  text-shadow: 6px 6px 0 var(--encre);
+  opacity: 0;
+  animation: sfx-boum 1.2s var(--ease) forwards;
+}
+
+.terrassement-sfx span:nth-child(1) { left: 6%; top: 22%; rotate: -12deg; }
+.terrassement-sfx span:nth-child(2) { right: 8%; top: 42%; rotate: 9deg; animation-delay: 0.9s; }
+.terrassement-sfx span:nth-child(3) { left: 30%; bottom: 14%; rotate: -4deg; animation-delay: 1.8s; font-size: clamp(48px, 9vw, 130px); }
+
+@keyframes sfx-boum {
+  0% { opacity: 0; transform: scale(2.2); }
+  18% { opacity: 1; transform: scale(1); }
+  70% { opacity: 1; transform: scale(1.04); }
+  100% { opacity: 0; transform: scale(1.1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.terrassement #contenu { animation: none; }
+  .terrassement-sfx { display: none; }
+}
+
 /* ------------------------------------------------------------- Responsive */
 
 @media (max-width: 1240px) {

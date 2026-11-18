@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Barlow_Condensed, Inter } from "next/font/google";
 
+import Compagnon from "@/components/Compagnon";
 import CvModal from "@/components/CvModal";
 import Header from "@/components/Header";
 import { site } from "@/content/data";
@@ -60,6 +61,7 @@ export default function RootLayout({
         <Header />
         {children}
         <CvModal />
+        <Compagnon />
       </body>
     </html>
   );

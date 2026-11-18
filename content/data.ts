@@ -465,3 +465,52 @@ export const footer = {
   languages:
     "Français : DALF C1 · Anglais : B2 professionnel · Certification Coursera : UX, Figma et agilité",
 };
+
+/* ------------------------------------------------------------ Compagnon ---- */
+
+/** Ymir : personnage original au style anime qui fait visiter le site. */
+export const compagnon = {
+  nom: "Ymir",
+  /** Réplique dite la première fois que chaque section apparaît. */
+  sections: {
+    accueil: "Yo ! Moi c’est Ymir, ta guide officielle. Suis-moi ✦",
+    profil: "Dev ET Product Owner. Double classe, comme dans les RPG !",
+    arsenal: "Voilà son arsenal. Le mien, c’est… sauter. Chacun son truc.",
+    parcours: "Douala → Nantes : un vrai arc de progression, ça !",
+    projets: "G-Buy, 2LN, des apps sur les stores… Zéro épisode filler.",
+    design: "Figma aussi ?! Elle cache encore des techniques secrètes.",
+    contact: "Alternance dès sept. 2027 : recrute-la avant les autres !",
+  } as Record<string, string>,
+  clics: [
+    "Hé ! Ça chatouille !",
+    "Ses deux CV ? Bouton « CV » tout en haut ↑",
+    "Clique encore… j’ai une technique secrète.",
+    "Son niveau de puissance ? 3 ans d’XP, et ça monte.",
+    "Elle code avec Claude. Moi, je code avec mes pieds.",
+    "Je suis petite mais je garde tout le site, OK ?",
+    "40+ user stories livrées. Moi, j’ai livré… des sauts.",
+    "Nantes ou ailleurs en France : elle est mobile !",
+    "Tu cliques comme un boss de fin de niveau, toi.",
+    "Double-clique-moi… si t’as le cran.",
+  ],
+  reveil: "Je dormais pas, je méditais. Nuance.",
+  /** Quand on l’attrape à la souris */
+  attrape: "Waaah ! Repose-moi, j’ai le vertige !",
+  /** Quand on la relâche */
+  lache: "Atterrissage parfait. Enfin… presque.",
+  /** Quand on la fait revenir après l’avoir masquée */
+  retour: "Tu croyais te débarrasser de moi ? Me revoilà !",
+  /** Assise sur la barre de navigation flottante (une au hasard) */
+  perche: [
+    "Vue imprenable d’ici. Je surveille les recruteurs.",
+    "Je squatte la barre de navigation. Loyer : zéro.",
+    "D’en haut, son portfolio est encore plus beau.",
+  ],
+  /** Double-clic (ou très rarement, d’elle-même) : le Grand Terrassement */
+  titans: {
+    appel: "C’est décidé : je lance le Grand Terrassement ! Titans, à moi !",
+    fin: "…Bon. Ils sont en retard. On reprend la visite ?",
+  },
+  /** Un clic sur quatre : salto */
+  salto: "Technique secrète : salto arrière ! ✦",
+};
