@@ -371,7 +371,7 @@ export const projects: Project[] = [
       "ADEPA Santé : association France / Cameroun / Luxembourg, parcours par besoin, agenda, dons, blog, RGPD.",
       "Dayness Cosmetics : Shopify, 2 gammes, routines, diagnostic, affiliation, checkout multi-pays, bilingue.",
     ],
-    result: { figure: "3+", label: "sites clients en production" },
+    result: { figure: "10+", label: "sites clients en production" },
     stack: ["WordPress", "Elementor", "Shopify", "PHP", "SEO technique"],
     image: "/figma/projet-sites-clients.png",
     imageAlt: "Captures réelles de trois sites clients livrés",
